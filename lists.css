@@ -1,0 +1,211 @@
+.lists-header {
+  text-align: center;
+  margin-bottom: 30px;
+  padding: 30px 20px;
+  background: linear-gradient(to right, var(--primary-dark), var(--primary-color));
+  border-radius: 8px;
+  color: white;
+}
+
+.lists-header h2 { font-size: 32px; margin-bottom: 10px; }
+.lists-info { font-size: 16px; margin-bottom: 20px; opacity: 0.9; }
+
+.lists-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+  padding: 10px 0;
+}
+
+.list-card {
+  background: #232323;
+  border-radius: 18px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+  transition: transform 0.3s, box-shadow 0.3s;
+  padding: 28px 22px 22px 22px;
+  color: #fff;
+  margin-bottom: 18px;
+}
+
+body.light-theme .list-card { background-color: var(--card-light); }
+.list-card:hover {
+  transform: translateY(-7px) scale(1.02);
+  box-shadow: 0 16px 48px rgba(229,9,20,0.13);
+}
+
+.list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.list-header h3 {
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #ffd700;
+  letter-spacing: 0.5px;
+}
+
+.list-privacy {
+  font-size: 1.1rem;
+  color: #bbb;
+}
+
+.list-description {
+  font-size: 1.05rem;
+  margin-bottom: 12px;
+  opacity: 0.85;
+  color: #eee;
+}
+
+.list-stats {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.98rem;
+  opacity: 0.7;
+  margin-bottom: 18px;
+}
+
+.list-preview {
+  display: flex;
+  gap: 7px;
+  margin-bottom: 18px;
+  min-height: 80px;
+}
+
+.preview-poster img {
+  width: 62px;
+  height: 92px;
+  object-fit: cover;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+}
+
+.preview-more {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255,255,255,0.08);
+  border-radius: 6px;
+  width: 62px;
+  font-size: 1rem;
+  color: #ffd700;
+  font-weight: 600;
+}
+
+.list-actions {
+  display: flex;
+  gap: 14px;
+  margin-top: 10px;
+}
+
+.list-actions button {
+  flex: 1;
+  padding: 14px 0;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1.08rem;
+  font-weight: 700;
+  transition: background 0.2s, transform 0.2s;
+  box-shadow: 0 2px 8px rgba(229,9,20,0.08);
+}
+
+.view-list-btn {
+  background: linear-gradient(90deg, #e50914 0%, #ff6a00 100%);
+  color: #fff;
+}
+
+.view-list-btn:hover {
+  background: linear-gradient(90deg, #ff6a00 0%, #e50914 100%);
+  transform: scale(1.04);
+}
+
+.edit-list-btn {
+  background: #ffd700;
+  color: #232323;
+}
+
+.edit-list-btn:hover {
+  background: #ffb300;
+  color: #fff;
+  transform: scale(1.04);
+}
+
+.delete-list-btn {
+  background: #e50914;
+  color: #fff;
+}
+
+.delete-list-btn:hover {
+  background: #b0060f;
+  color: #fff;
+  transform: scale(1.04);
+}
+
+.empty-message {
+  text-align: center;
+  padding: 50px 20px;
+  background-color: var(--card-dark);
+  border-radius: 10px;
+  margin: 30px 0;
+}
+
+.empty-message h3 { font-size: 24px; margin-bottom: 15px; color: #eee; }
+.empty-message p { color: #aaa; font-size: 16px; line-height: 1.5; }
+
+.empty-message .btn {
+  display: inline-block;
+  background-color: var(--primary-color);
+  color: white;
+  text-decoration: none;
+  padding: 12px 24px;
+  border-radius: 6px;
+  font-size: 16px;
+  transition: background-color 0.2s;
+}
+
+.empty-message .btn:hover {
+  background-color: #f40612;
+}
+
+/* Light Theme */
+body.light-theme .empty-message {
+  background-color: var(--card-light);
+}
+
+body.light-theme .empty-message h3 {
+  color: #333;
+}
+
+body.light-theme .empty-message p {
+  color: #666;
+}
+
+body.light-theme .empty-message .btn {
+  background-color: #0071eb;
+}
+
+body.light-theme .empty-message .btn:hover {
+  background-color: #0056b3;
+}
+
+@media (max-width: 700px) {
+  .list-card {
+    padding: 14px 6px 14px 6px;
+  }
+  .list-header h3 {
+    font-size: 1.05rem;
+  }
+  .list-actions button {
+    font-size: 0.98rem;
+    padding: 10px 0;
+  }
+  .preview-poster img, .preview-more {
+    width: 38px;
+    height: 56px;
+    font-size: 0.8rem;
+  }
+}

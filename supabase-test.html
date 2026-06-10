@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Supabase Connection Test - CinePrime</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
+  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+</head>
+<body>
+  <header>
+    <h1><a href="index.html">CinePrime</a></h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="watchlist.html">My Watchlist</a>
+      <a href="quiz.html">Movie Quiz</a>
+      <a href="login.html" id="login-link">Login</a>
+      <span id="username-display" class="user-display"></span>
+      <a href="javascript:void(0);" id="logout-link" style="display:none;">Logout</a>
+    </nav>
+    <button id="theme-toggle" class="theme-btn">🌙</button>
+  </header>
+
+  <main style="max-width: 800px; margin: 0 auto; padding: 20px;">
+    <h2>Supabase Connection Test</h2>
+    <div id="test-results" style="background: rgba(0,0,0,0.1); padding: 20px; border-radius: 8px; margin: 20px 0;">
+      <p>Testing connection...</p>
+    </div>
+    <button id="test-btn" style="padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">Test Connection</button>
+    <button id="clear-storage-btn" style="padding: 10px 20px; background: #dc3545; color: white; border: none; border-radius: 5px; cursor: pointer; margin-left: 10px;">Clear Local Storage</button>
+  </main>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", async () => {
+      const resultsDiv = document.getElementById('test-results');
+      const testBtn = document.getElementById('test-btn');
+      const clearBtn = document.getElementById('clear-storage-btn');
+
+      function updateResults(message, isError = false) {
+        resultsDiv.innerHTML = `<p style="color: ${isError ? '#ff4d4d' : '#28a745'}">${message}</p>`;
+      }
+
+      async function runTests() {
+        updateResults('Running tests...');
+
+        // Test 1: Check if Supabase client is available
+        if (!window.supabaseClient) {
+          updateResults('❌ Supabase client not loaded', true);
+          return;
+        }
+        updateResults('✅ Supabase client loaded');
+
+        // Test 2: Check if Supabase is marked as available
+        setTimeout(() => {
+          if (!window.supabaseAvailable) {
+            updateResults('❌ Supabase service not available (DNS/network issue)', true);
+            return;
+          }
+          updateResults('✅ Supabase service available');
+        }, 500);
+
+        // Test 3: Try to get user (should fail gracefully if not logged in)
+        setTimeout(async () => {
+          try {
+            const { data, error } = await window.supabaseClient.auth.getUser();
+            if (error && error.message !== 'Auth session missing!') {
+              if (error.message?.includes('403') || error.status === 403) {
+                updateResults('❌ Supabase auth failed: 403 Forbidden (Project suspended or invalid API key)', true);
+              } else {
+                updateResults('❌ Supabase auth error: ' + error.message, true);
+              }
+            } else {
+              updateResults('✅ Supabase auth working (user: ' + (data.user ? data.user.email : 'not logged in') + ')');
+            }
+          } catch (err) {
+            if (err.message?.includes('403') || err.status === 403) {
+              updateResults('❌ Supabase auth failed: 403 Forbidden (Project suspended or invalid API key)', true);
+            } else {
+              updateResults('❌ Supabase auth failed: ' + err.message, true);
+            }
+          }
+        }, 1000);
+
+        // Test 4: Check local storage
+        setTimeout(() => {
+          const currentUser = localStorage.getItem('currentUser');
+          const isLoggingOut = localStorage.getItem('isLoggingOut');
+          updateResults('✅ Local storage check - Current user: ' + (currentUser ? 'present' : 'none') + ', Logging out: ' + (isLoggingOut || 'no'));
+        }, 1500);
+      }
+
+      testBtn.addEventListener('click', runTests);
+      clearBtn.addEventListener('click', () => {
+        localStorage.clear();
+        sessionStorage.clear();
+        updateResults('✅ All local storage cleared');
+      });
+
+      // Run tests automatically on page load
+      runTests();
+    });
+  </script>
+
+  <footer>
+    <p>Powered by OMDb API | Created by CinePrime &copy; 2023</p>
+  </footer>
+</body>
+</html>

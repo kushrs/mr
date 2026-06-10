@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Movie Quiz - CinePrime</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="quiz.css" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+</head>
+<body>
+  <header>
+    <h1><a href="index.html">CinePrime</a></h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="watchlist.html">My Watchlist</a>
+      <a href="quiz.html" class="active">Movie Quiz</a>
+      <a href="matchmaker.html">AI Matchmaker</a>
+      <a href="login.html" id="login-link">Login</a>
+      <span id="username-display" class="user-display"></span>
+      <a href="javascript:void(0);" id="logout-link" style="display:none;">Logout</a>
+    </nav>
+    <button id="theme-toggle" class="theme-btn">🌙</button>
+  </header>
+  
+  <main>
+    <div class="quiz-container">
+      <h2>Movie Trivia Quiz</h2>
+      <div id="quiz-question" class="quiz-question">
+        <h3 id="question-text">Loading question...</h3>
+        <div id="options-container" class="options-container">
+          <!-- Options will be added here -->
+        </div>
+      </div>
+      <div class="quiz-controls">
+        <p id="score-display">Score: 0</p>
+        <button id="next-question" class="btn" disabled>Next Question</button>
+      </div>
+    </div>
+
+    <!-- Global Leaderboard Section -->
+    <div class="leaderboard-section">
+      <h3>🏆 Global Leaderboard</h3>
+      <p class="leaderboard-subtitle">Top movie trivia champions on CinePrime</p>
+      <div class="leaderboard-card">
+        <table class="leaderboard-table">
+          <thead>
+            <tr>
+              <th>Rank</th>
+              <th>Username</th>
+              <th>Score</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody id="leaderboard-body">
+            <tr>
+              <td colspan="4" class="leaderboard-loading">Loading standings...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>Powered by OMDb API | Created by CinePrime &copy; 2023</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
+  <script src="quiz.js"></script>
+</body>
+</html>
+

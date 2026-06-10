@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CinePrime - Stream Premium Movies & Series</title>
+  <meta name="description" content="Discover popular movies, TV shows, and explore genres on CinePrime. Save to your watchlist and test your knowledge with movie quiz.">
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <h1><a href="index.html">CinePrime</a></h1>
+
+<nav>
+  <a href="index.html" class="active">Home</a>
+  <a href="watchlist.html">My Watchlist</a>
+  <a href="quiz.html">Movie Quiz</a>
+  <a href="matchmaker.html">AI Matchmaker</a>
+  <a href="login.html" id="login-link">Login</a>
+  <span id="username-display" class="user-display"></span>
+  <a href="javascript:void(0);" id="logout-link" style="display:none;">Logout</a>
+</nav>
+
+<div class="controls">
+<div class="search-box">
+
+<input
+id="search"
+type="text"
+placeholder="Search movies, actors, series..."
+/>
+
+<select id="type-filter">
+<option value="">All</option>
+<option value="movie">Movies</option>
+<option value="series">TV Shows</option>
+</select>
+
+<select id="year-filter">
+<option value="">Any Year</option>
+<option value="2024">2024</option>
+<option value="2023">2023</option>
+<option value="2022">2022</option>
+<option value="2021">2021</option>
+<option value="2020">2020</option>
+<option value="2015">2015+</option>
+<option value="2010">2010+</option>
+<option value="2000">2000+</option>
+</select>
+
+<select id="genre-filter">
+<option value="">Genre</option>
+<option value="action">Action</option>
+<option value="comedy">Comedy</option>
+<option value="drama">Drama</option>
+<option value="sci-fi">Sci-Fi</option>
+<option value="thriller">Thriller</option>
+<option value="horror">Horror</option>
+</select>
+
+<button id="search-btn">Search</button>
+
+</div>
+
+<button id="theme-toggle" class="theme-btn">🌙</button>
+</header>
+
+
+<!-- HERO -->
+<section id="hero-banner">
+<div class="hero-content">
+
+<button id="hero-prev" class="hero-nav-btn">&#10094;</button>
+
+<div id="hero-bg" class="hero-bg"></div>
+
+<div class="hero-info">
+<h1 id="hero-title">Featured Movie</h1>
+<p id="hero-tagline">Discover amazing movies</p>
+</div>
+
+<button id="hero-next" class="hero-nav-btn">&#10095;</button>
+
+</div>
+</section>
+
+
+<main class="main-content">
+
+<section class="movie-section">
+<h2></h2>
+<div id="search-results" class="movie-row"></div>
+</section>
+
+<section class="movie-section">
+<h2>Popular Movies</h2>
+<div id="movie-grid" class="movie-row"></div>
+</section>
+
+<section class="movie-section">
+<h2>Trending Now</h2>
+<div id="trending-grid" class="movie-row"></div>
+</section>
+
+<section class="movie-section">
+<h2>Top Rated Movies</h2>
+<div id="top-rated-grid" class="movie-row"></div>
+</section>
+
+<section class="movie-section">
+<h2>Explore by Genre</h2>
+
+<div class="genre-tabs">
+<button class="genre-tab active" data-genre="Action">Action</button>
+<button class="genre-tab" data-genre="Comedy">Comedy</button>
+<button class="genre-tab" data-genre="Drama">Drama</button>
+<button class="genre-tab" data-genre="Sci-Fi">Sci-Fi</button>
+</div>
+
+<div id="genre-grid" class="movie-row"></div>
+</section>
+
+
+<section class="movie-section">
+<h2>Recommended For You</h2>
+<div id="recommendations-grid" class="movie-row"></div>
+</section>
+
+</main>
+
+<footer>
+<p>Powered by OMDb API | CinePrime © 2023</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+<script src="app-common.js"></script>
+<script src="components.js"></script>
+<script src="script.js"></script>
+</body>
+</html>

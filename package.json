@@ -1,0 +1,8 @@
+{
+  "name": "cineprime-frontend",
+  "version": "1.0.0",
+  "description": "CinePrime Movie Application Frontend with Vercel Serverless APIs",
+  "dependencies": {
+    "node-fetch": "^2.6.9"
+  }
+}

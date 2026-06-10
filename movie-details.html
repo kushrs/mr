@@ -1,0 +1,204 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Movie Details - CinePrime</title>
+
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="details.css">
+
+</head>
+
+<body>
+
+<header>
+  <h1><a href="index.html">CinePrime</a></h1>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="watchlist.html">My Watchlist</a>
+    <a href="quiz.html">Movie Quiz</a>
+    <a href="matchmaker.html">AI Matchmaker</a>
+    <a href="login.html" id="login-link">Login</a>
+    <span id="username-display" class="user-display"></span>
+    <a href="javascript:void(0);" id="logout-link" style="display:none;">Logout</a>
+  </nav>
+  <button id="theme-toggle" class="theme-btn">🌙</button>
+</header>
+
+
+<!-- HERO BANNER -->
+<div class="banner-buttons">
+<button id="add-watchlist" class="btn">+ Add to Watchlist</button>
+
+<button onclick="goHome()" class="btn secondary-btn">← Back Home</button>
+
+</div>
+
+
+
+<main>
+
+<div id="movie-details" class="details-container">
+
+<div id="loading" class="loading-indicator">
+Loading movie details...
+</div>
+
+
+</div>
+
+
+<!-- MOVIE INFO GRID -->
+
+<section class="movie-info-grid">
+
+<div>
+<strong>Genre</strong>
+<p id="genre"></p>
+</div>
+
+<div>
+<strong>Runtime</strong>
+<p id="runtime"></p>
+</div>
+
+<div>
+<strong>Language</strong>
+<p id="language"></p>
+</div>
+
+</section>
+
+
+
+
+
+<section class="rating-summary-section" id="rating-summary-section">
+  <h3>IMDb Score</h3>
+  <p class="rating-summary-note">Official IMDb rating and total votes for this movie.</p>
+  <div id="rating-summary" class="rating-summary"></div>
+</section>
+
+<!-- USER RATING -->
+
+<section class="rating-section">
+
+<h3>Your Rating</h3>
+
+<div class="star-rating">
+
+<span class="star" data-rating="1">★</span>
+<span class="star" data-rating="2">★</span>
+<span class="star" data-rating="3">★</span>
+<span class="star" data-rating="4">★</span>
+<span class="star" data-rating="5">★</span>
+
+</div>
+
+<p id="user-rating">Your rating: Not rated yet</p>
+
+<button id="submit-rating" class="btn">Submit Rating</button>
+
+</section>
+
+
+<!-- TRAILER -->
+
+<section id="trailer-section" class="trailer-section">
+
+<h3>Trailer</h3>
+
+<div class="trailer-container">
+<iframe
+id="trailer-video"
+src=""
+title="Movie Trailer"
+frameborder="0"
+allowfullscreen>
+</iframe>
+</div>
+
+</section>
+
+
+<!-- COMMENTS -->
+
+<section class="comments-section">
+
+<h3>Comments</h3>
+
+<div class="comment-form">
+
+<textarea id="comment-text"
+placeholder="Share your thoughts about this movie..."></textarea>
+
+<input type="text"
+id="comment-name"
+placeholder="Your name">
+
+<button id="submit-comment" class="btn">
+Post Comment
+</button>
+
+</div>
+
+<div id="comments-container"></div>
+
+</section>
+
+
+<!-- AI INSIGHTS -->
+
+<section class="ai-insights-section">
+
+<h3>AI Movie Insights</h3>
+
+<div id="ai-insights-content">
+Loading insights...
+</div>
+
+</section>
+
+
+<!-- POLL -->
+
+<section class="poll-section">
+
+<h3>Poll: Would you recommend this movie?</h3>
+
+<button onclick="votePoll('yes')">Yes</button>
+<button onclick="votePoll('no')">No</button>
+
+<div id="poll-results"></div>
+
+</section>
+
+
+<!-- SIMILAR MOVIES -->
+
+
+
+
+</main>
+
+
+<footer>
+
+<p>Powered by OMDb API | CinePrime</p>
+
+</footer>
+
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+<script src="app-common.js"></script>
+<script src="components.js"></script>
+<script src="details.js"></script>
+
+</body>
+
+</html>

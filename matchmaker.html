@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Matchmaker - CinePrime</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="matchmaker.css">
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+</head>
+<body>
+  <header>
+    <h1><a href="index.html">CinePrime</a></h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="watchlist.html">My Watchlist</a>
+      <a href="quiz.html">Movie Quiz</a>
+      <a href="matchmaker.html" class="active">AI Matchmaker</a>
+      <a href="login.html" id="login-link">Login</a>
+      <span id="username-display" class="user-display"></span>
+      <a href="javascript:void(0);" id="logout-link" style="display:none;">Logout</a>
+    </nav>
+    <button id="theme-toggle" class="theme-btn">🌙</button>
+  </header>
+
+  <main class="chat-workspace">
+    <!-- SIDEBAR: QUICK CONFIG & PRESETS -->
+    <aside class="chat-sidebar glass-panel">
+      <div class="sidebar-header">
+        <h3>🤖 AI Movie Curator</h3>
+        <p>Your personal companion to fight decision paralysis.</p>
+      </div>
+
+      <div class="presets-section">
+        <h4>⚡ Quick Starters</h4>
+        <div class="preset-pills">
+          <button class="preset-pill" data-prompt="Suggest 3 mind-bending psychological thrillers with crazy plot twists">🧠 Mind-Bending Twists</button>
+          <button class="preset-pill" data-prompt="Cozy romance or comedy movies for a perfect date night">🍿 Date Night Vibe</button>
+          <button class="preset-pill" data-prompt="Terrifying horror movies with haunted houses or paranormal elements">👻 Spooky Supernatural</button>
+          <button class="preset-pill" data-prompt="Recommend epic sci-fi space operas similar to Interstellar">🚀 Sci-Fi Space Odysseys</button>
+          <button class="preset-pill" data-prompt="Underappreciated hidden gems or indie movies from the 1990s">💎 90s Hidden Gems</button>
+          <button class="preset-pill" data-prompt="Heartwarming animated movies to watch with the entire family">👨‍👩‍👧‍👦 Family Movie Night</button>
+        </div>
+      </div>
+
+      <div class="sidebar-footer">
+        <button id="clear-chat-btn" class="btn secondary-btn reset-btn">🗑️ Clear Chat History</button>
+      </div>
+    </aside>
+
+    <!-- MAIN CHAT CONTAINER -->
+    <section class="chat-container glass-panel">
+      <!-- Chat Messages Scroll Area -->
+      <div class="chat-messages" id="chat-messages">
+        <!-- AI Greeting -->
+        <div class="chat-message bot">
+          <div class="message-avatar">🤖</div>
+          <div class="message-bubble">
+            <p>Hello! I am your CinePrime AI Movie Curator. Let's talk about movies! 🎬</p>
+            <p>Tell me what vibe you're looking for, ask a specific question, or describe your current mood (e.g. <em>"Give me something funny to watch on a rainy night"</em> or <em>"Suggest sci-fi movies similar to Inception"</em>). I'll find the perfect match for you!</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chat Input Area -->
+      <div class="chat-input-wrapper">
+        <textarea id="chat-input" placeholder="Type your message here... Ask for suggestions, compare films, or talk movies!" rows="1"></textarea>
+        <button id="chat-send-btn" class="btn send-btn">
+          <span>Send</span>
+          <svg class="send-icon" viewBox="0 0 24 24"><path d="M2,21L23,12L2,3V10L17,12L2,14V21Z"/></svg>
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>Powered by OMDb API & Gemini LLM | CinePrime © 2026</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
+  <script src="app-common.js"></script>
+  <script src="components.js"></script>
+  <script src="matchmaker.js"></script>
+</body>
+</html>

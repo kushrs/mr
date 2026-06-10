@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login - CinePrime</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="auth.css" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+</head>
+<body>
+  <header>
+    <h1><a href="index.html">CinePrime</a></h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="watchlist.html">My Watchlist</a>
+      <a href="quiz.html">Movie Quiz</a>
+      <a href="matchmaker.html">AI Matchmaker</a>
+      <a href="login.html" id="login-link">Login</a>
+      <span id="username-display" class="user-display"></span>
+      <a href="javascript:void(0);" id="logout-link" style="display:none;">Logout</a>
+    </nav>
+    <button id="theme-toggle" class="theme-btn">🌙</button>
+  </header>
+  
+  <main>
+    <form id="login-form" class="auth-form">
+      <h2>Sign In to CinePrime</h2>
+      <button type="button" id="google-login-btn" class="google-btn"><img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" style="width:20px;vertical-align:middle;"> Sign in with Google</button>
+      <div class="form-error"></div>
+      <label for="email">Email</label>
+      <input id="email" type="email" name="email" placeholder="Enter your email" required>
+      <label for="password">Password</label>
+      <input id="password" type="password" name="password" placeholder="Enter your password" required>
+      <button type="submit">Login</button>
+      <div class="form-link" onclick="window.location.href='register.html'">Don't have an account? Register</div>
+    </form>
+  </main>
+
+  <script>
+    // Check for authentication errors
+    document.addEventListener("DOMContentLoaded", () => {
+      console.log('login.html DOMContentLoaded - checking for logout flag');
+      const logoutFlag = localStorage.getItem('isLoggingOut');
+      console.log('Logout flag:', logoutFlag);
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const error = urlParams.get('error');
+
+      if (error) {
+        const errorMessage = document.querySelector('.form-error');
+
+        if (error === 'google_auth_failed') {
+          errorMessage.textContent = "Google authentication failed. Please try again.";
+        } else if (error === 'google_user_info_failed') {
+          errorMessage.textContent = "Failed to get user information from Google. Please try again.";
+        }
+      }
+
+      // Check if we just logged out
+      if (logoutFlag === 'true') {
+        console.log('Detected logout flag - clearing it');
+        localStorage.removeItem('isLoggingOut');
+      }
+
+      const loginLink = document.getElementById("login-link");
+      if (loginLink) {
+        const currentUser = JSON.parse(localStorage.getItem("currentUser")) || JSON.parse(sessionStorage.getItem("currentUser"));
+        if (currentUser) {
+          loginLink.textContent = "Profile";
+          loginLink.href = "profile.html";
+          loginLink.classList.remove("active");
+          if (window.location.pathname.endsWith("profile.html")) {
+            loginLink.classList.add("active");
+          }
+        } else {
+          loginLink.textContent = "Login";
+          loginLink.href = "login.html";
+          loginLink.classList.remove("active");
+          if (window.location.pathname.endsWith("login.html") || window.location.pathname.endsWith("login")) {
+            loginLink.classList.add("active");
+          }
+        }
+      }
+    });
+  </script>
+
+  <footer>
+    <p>Powered by OMDb API | Created by CinePrime &copy; 2023</p>
+  </footer>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
+  <script src="app-common.js"></script>
+  <script src="auth.js"></script>
+</body>
+</html>
+
+

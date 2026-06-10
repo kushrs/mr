@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My List - CinePrime</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="lists.css" />
+</head>
+<body>
+  <header>
+    <h1><a href="index.html">CinePrime</a></h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="watchlist.html">My Watchlist</a>
+      <a href="quiz.html">Movie Quiz</a>
+      <a href="matchmaker.html">AI Matchmaker</a>
+      <a href="lists.html" class="active">My Lists</a>
+      <a href="login.html" id="login-link">Login</a>
+      <span id="username-display" class="user-display"></span>
+      <a href="javascript:void(0);" id="logout-link" style="display:none;">Logout</a>
+    </nav>
+    <button id="theme-toggle" class="theme-btn">🌙</button>
+  </header>
+  <main>
+    <div class="lists-header">
+      <button onclick="window.location.href='lists.html'" class="btn" style="float:left;margin-right:18px;">← Back to My Lists</button>
+      <h2 id="list-title">My List</h2>
+      <p id="list-description" class="lists-info"></p>
+    </div>
+    <div id="list-movies-grid" class="grid-container"></div>
+    <div id="empty-list-message" class="empty-message" style="display:none;">
+      <h3>This list is empty</h3>
+      <p>Add movies to your list to see them here.</p>
+      <a href="index.html" class="btn">Discover Movies</a>
+    </div>
+  </main>
+  <footer>
+    <p>Powered by OMDb API | Created by CinePrime &copy; 2023</p>
+  </footer>
+  <script src="app-common.js"></script>
+  <script src="components.js"></script>
+  <script src="list-detail.js"></script>
+</body>
+</html> 

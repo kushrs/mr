@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My Profile - CinePrime</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="profile.css" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+</head>
+<body>
+  <header>
+    <h1><a href="index.html">CinePrime</a></h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="watchlist.html">My Watchlist</a>
+      <a href="quiz.html">Movie Quiz</a>
+      <a href="matchmaker.html">AI Matchmaker</a>
+      <a href="login.html" id="login-link">Login</a>
+      <span id="username-display" class="user-display"></span>
+      <a href="javascript:void(0);" id="logout-link" style="display:none;">Logout</a>
+    </nav>
+    <button id="theme-toggle" class="theme-btn">🌙</button>
+  </header>
+  
+  <main>
+    <div class="profile-container">
+      <h2>My Profile</h2>
+      
+      <div class="profile-header">
+        <div class="profile-picture-container">
+          <div id="profile-picture" class="profile-picture">
+            <!-- Profile picture or initials will be inserted here -->
+          </div>
+          <button id="change-picture-btn" class="btn-small">Change Picture</button>
+          <input type="file" id="picture-upload" accept="image/*" style="display: none;">
+        </div>
+        
+        <div class="profile-info">
+          <h3 id="profile-name">Loading...</h3>
+          <p id="profile-email">Loading...</p>
+          <p id="profile-joined">Member since: Loading...</p>
+        </div>
+      </div>
+      <button id="logout-btn" class="btn logout-btn" style="margin: 24px auto 0; display: block; max-width: 200px;">Log Out</button>
+      <div class="profile-tabs">
+        <button class="tab-btn active" data-tab="account">Account Settings</button>
+        <button class="tab-btn" data-tab="preferences">Preferences</button>
+        <button class="tab-btn" data-tab="activity">Activity</button>
+      </div>
+      
+      <div id="account-tab" class="tab-content active">
+        <form id="profile-form">
+          <div class="form-group">
+            <label for="fullname">Full Name</label>
+            <input type="text" id="fullname" name="fullname">
+          </div>
+          
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username">
+          </div>
+          
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email">
+          </div>
+          
+          <div class="password-section">
+            <h4>Change Password</h4>
+            <div class="form-group">
+              <label for="current-password">Current Password</label>
+              <input type="password" id="current-password" name="current-password">
+            </div>
+            
+            <div class="form-group">
+              <label for="new-password">New Password</label>
+              <input type="password" id="new-password" name="new-password">
+              <div class="password-strength">
+                <div class="strength-bar"></div>
+                <span class="strength-text">Password strength</span>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label for="confirm-password">Confirm New Password</label>
+              <input type="password" id="confirm-password" name="confirm-password">
+            </div>
+          </div>
+          
+          <div id="error-message" class="error-message"></div>
+          <button type="submit" class="btn">Save Changes</button>
+        </form>
+      </div>
+      
+      <div id="preferences-tab" class="tab-content">
+        <h3>Content Preferences</h3>
+        
+        <div class="preference-group">
+          <h4>Favorite Genres</h4>
+          <div class="genre-checkboxes">
+            <label class="checkbox-label">
+              <input type="checkbox" name="genre" value="action"> Action
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" name="genre" value="comedy"> Comedy
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" name="genre" value="drama"> Drama
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" name="genre" value="horror"> Horror
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" name="genre" value="sci-fi"> Sci-Fi
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" name="genre" value="thriller"> Thriller
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" name="genre" value="romance"> Romance
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" name="genre" value="animation"> Animation
+            </label>
+          </div>
+        </div>
+        
+        <div class="preference-group">
+          <h4>Content Rating</h4>
+          <select id="content-rating">
+            <option value="all">All Ratings</option>
+            <option value="g">G - General Audiences</option>
+            <option value="pg">PG - Parental Guidance Suggested</option>
+            <option value="pg13">PG-13 - Parents Strongly Cautioned</option>
+            <option value="r">R - Restricted</option>
+          </select>
+        </div>
+        
+        <div class="preference-group">
+          <h4>Notification Settings</h4>
+          <label class="toggle-switch">
+            <input type="checkbox" id="email-notifications">
+            <span class="toggle-slider"></span>
+            Email notifications for new releases
+          </label>
+          
+          <label class="toggle-switch">
+            <input type="checkbox" id="browser-notifications">
+            <span class="toggle-slider"></span>
+            Browser notifications
+          </label>
+        </div>
+        
+        <button id="save-preferences" class="btn">Save Preferences</button>
+      </div>
+      
+      <div id="activity-tab" class="tab-content">
+        <h3>Recent Activity</h3>
+        
+        <div class="activity-section">
+          <h4>Recently Viewed</h4>
+          <div id="recently-viewed" class="activity-list">
+            <!-- Recently viewed movies will be displayed here -->
+            <p class="empty-message">No recently viewed movies</p>
+          </div>
+        </div>
+        
+        <div class="activity-section">
+          <h4>Your Ratings</h4>
+          <div id="user-ratings" class="activity-list">
+            <!-- User ratings will be displayed here -->
+            <p class="empty-message">No ratings yet</p>
+          </div>
+        </div>
+        
+        <div class="activity-section">
+          <h4>Your Comments</h4>
+          <div id="user-comments" class="activity-list">
+            <!-- User comments will be displayed here -->
+            <p class="empty-message">No comments yet</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>Powered by OMDb API | Created by CinePrime &copy; 2023</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
+  <script src="app-common.js"></script>
+  <script src="profile.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const loginLink = document.getElementById("login-link");
+      if (loginLink) {
+        const currentUser = JSON.parse(localStorage.getItem("currentUser")) || JSON.parse(sessionStorage.getItem("currentUser"));
+        if (currentUser) {
+          loginLink.textContent = "Profile";
+          loginLink.href = "profile.html";
+          loginLink.classList.remove("active");
+          if (window.location.pathname.endsWith("profile.html")) {
+            loginLink.classList.add("active");
+          }
+        } else {
+          loginLink.textContent = "Login";
+          loginLink.href = "login.html";
+          loginLink.classList.remove("active");
+          if (window.location.pathname.endsWith("login.html")) {
+            loginLink.classList.add("active");
+          }
+        }
+      }
+    });
+  </script>
+</body>
+</html>
