@@ -1,4 +1,4 @@
-const CACHE_NAME = 'cineprime-cache-v4';
+const CACHE_NAME = 'cineprime-cache-v5';
 const urlsToCache = [
   '/',
   '/index.html',
@@ -47,11 +47,10 @@ self.addEventListener('fetch', event => {
     event.respondWith(
       fetch(event.request)
         .then(response => {
-          if (!response || response.status !== 200) {
-            throw new Error('Network response not OK');
+          if (response && response.status === 200) {
+            const copy = response.clone();
+            caches.open(CACHE_NAME).then(cache => cache.put(event.request, copy));
           }
-          const copy = response.clone();
-          caches.open(CACHE_NAME).then(cache => cache.put(event.request, copy));
           return response;
         })
         .catch(() => caches.match('/offline.html'))
