@@ -176,6 +176,7 @@ function fetchMovieDetails(id) {
       
       detailsContainer.innerHTML = detailsHTML;
       renderRatingSummary(movie);
+      loadStreamingAvailability(movie);
 
       // Populate static info grid fields
       const genreField = document.getElementById("genre");
@@ -212,32 +213,222 @@ function renderRatingSummary(movie) {
   const ratingSummary = document.getElementById('rating-summary');
   if (!ratingSummary) return;
 
-  const ratingValue = movie.imdbRating && movie.imdbRating !== 'N/A' ? parseFloat(movie.imdbRating) : 0;
-  const voteCount = movie.imdbVotes && movie.imdbVotes !== 'N/A' ? movie.imdbVotes : '0';
-  const percent = Math.round(ratingValue * 10);
-  const circumference = 2 * Math.PI * 80;
-  const dashOffset = (circumference - (ratingValue / 10) * circumference).toFixed(1);
+  let ratingsList = [];
 
-  ratingSummary.innerHTML = `
-    <div class="rating-gauge">
-      <svg viewBox="0 0 200 200" class="rating-gauge-svg" aria-label="IMDb rating gauge">
-        <defs>
-          <linearGradient id="ratingGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stop-color="#10b981" />
-            <stop offset="35%" stop-color="#facc15" />
-            <stop offset="65%" stop-color="#f97316" />
-            <stop offset="100%" stop-color="#8b5cf6" />
-          </linearGradient>
-        </defs>
-        <circle class="gauge-track" cx="100" cy="100" r="80" />
-        <circle class="gauge-fill" cx="100" cy="100" r="80" stroke-dasharray="${circumference}" stroke-dashoffset="${dashOffset}" />
-      </svg>
-      <div class="rating-gauge-label">
-        <span class="rating-percent">${percent}%</span>
-        <span class="rating-votes">${voteCount} Votes</span>
+  // 1. IMDb
+  const imdbVal = movie.imdbRating && movie.imdbRating !== 'N/A' ? parseFloat(movie.imdbRating) : null;
+  const imdbVotes = movie.imdbVotes && movie.imdbVotes !== 'N/A' ? movie.imdbVotes : null;
+  if (imdbVal !== null) {
+    ratingsList.push({
+      source: 'IMDb',
+      score: `${imdbVal}/10`,
+      percent: Math.round(imdbVal * 10),
+      votes: imdbVotes ? `${imdbVotes} Votes` : ''
+    });
+  }
+
+  // 2. Scan OMDb ratings array for Rotten Tomatoes, Metacritic, or others
+  if (movie.Ratings && Array.isArray(movie.Ratings)) {
+    movie.Ratings.forEach(r => {
+      const source = r.Source;
+      const value = r.Value;
+      
+      if (source === 'Rotten Tomatoes') {
+        const match = value.match(/(\d+)%/);
+        if (match) {
+          const val = parseInt(match[1]);
+          ratingsList.push({
+            source: 'Rotten Tomatoes',
+            score: value,
+            percent: val,
+            votes: ''
+          });
+        }
+      } else if (source === 'Metacritic') {
+        const match = value.match(/(\d+)\/100/);
+        if (match) {
+          const val = parseInt(match[1]);
+          ratingsList.push({
+            source: 'Metacritic',
+            score: value,
+            percent: val,
+            votes: ''
+          });
+        }
+      } else if (source === 'Internet Movie Database' && ratingsList.length === 0) {
+        const match = value.match(/([\d.]+)\/10/);
+        if (match) {
+          const val = parseFloat(match[1]);
+          ratingsList.push({
+            source: 'IMDb',
+            score: value,
+            percent: Math.round(val * 10),
+            votes: imdbVotes ? `${imdbVotes} Votes` : ''
+          });
+        }
+      }
+    });
+  }
+
+  if (ratingsList.length === 0) {
+    ratingsList.push({
+      source: 'N/A',
+      score: 'N/A',
+      percent: 0,
+      votes: 'No rating data available'
+    });
+  }
+
+  const circumference = 2 * Math.PI * 80;
+  let html = '';
+  
+  ratingsList.forEach((r, idx) => {
+    const dashOffset = (circumference - (r.percent / 100) * circumference).toFixed(1);
+    
+    let subtext = '';
+    if (r.source === 'IMDb') {
+      subtext = r.votes || 'IMDb Score';
+    } else if (r.source === 'Rotten Tomatoes') {
+      subtext = 'Tomatometer';
+    } else if (r.source === 'Metacritic') {
+      subtext = 'Metascore';
+    } else {
+      subtext = r.source;
+    }
+
+    let logoHtml = '';
+    if (r.source === 'IMDb') {
+      logoHtml = `<span class="rating-logo imdb-logo">IMDb</span>`;
+    } else if (r.source === 'Rotten Tomatoes') {
+      logoHtml = `<span class="rating-logo rt-logo">🍅 Rotten Tomatoes</span>`;
+    } else if (r.source === 'Metacritic') {
+      logoHtml = `<span class="rating-logo mc-logo">Metacritic</span>`;
+    } else {
+      logoHtml = `<span class="rating-logo">${r.source}</span>`;
+    }
+
+    html += `
+      <div class="rating-gauge-card">
+        ${logoHtml}
+        <div class="rating-gauge small-gauge">
+          <svg viewBox="0 0 200 200" class="rating-gauge-svg" aria-label="${r.source} rating gauge">
+            <defs>
+              <linearGradient id="ratingGradient_${idx}" x1="0%" y1="100%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#22c55e" />
+                <stop offset="40%" stop-color="#eab308" />
+                <stop offset="70%" stop-color="#f97316" />
+                <stop offset="100%" stop-color="#a855f7" />
+              </linearGradient>
+            </defs>
+            <circle class="gauge-track" cx="100" cy="100" r="80" />
+            <circle class="gauge-fill" cx="100" cy="100" r="80" stroke="url(#ratingGradient_${idx})" stroke-dasharray="${circumference}" stroke-dashoffset="${dashOffset}" />
+          </svg>
+          <div class="rating-gauge-label">
+            <span class="rating-percent">${r.percent}%</span>
+            <span class="rating-subtext">${subtext}</span>
+          </div>
+        </div>
       </div>
-    </div>
-  `;
+    `;
+  });
+
+  ratingSummary.innerHTML = html;
+}
+
+async function loadStreamingAvailability(movie) {
+  const container = document.getElementById("streaming-providers");
+  if (!container) return;
+
+  const title = movie.Title;
+  const year = movie.Year || "";
+
+  try {
+    const response = await fetch(`/api/availability?title=${encodeURIComponent(title)}&year=${encodeURIComponent(year)}`);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch availability, status: ${response.status}`);
+    }
+    const data = await response.json();
+    renderStreamingProviders(data);
+  } catch (error) {
+    console.error("Error loading streaming availability:", error);
+    container.innerHTML = `<p class="no-providers">Streaming availability currently unavailable.</p>`;
+  }
+}
+
+function renderStreamingProviders(data) {
+  const container = document.getElementById("streaming-providers");
+  if (!container) return;
+
+  if ((!data.streaming || data.streaming.length === 0) && (!data.rent_buy || data.rent_buy.length === 0)) {
+    container.innerHTML = `
+      <div class="no-providers">
+        <p>No active streaming or rental platforms found for this title in India.</p>
+        <p style="margin-top: 8px; font-size: 13px;">You can check JustWatch directly: <a href="https://www.justwatch.com/in/search?q=${encodeURIComponent(document.title.replace(' - CinePrime', ''))}" target="_blank" style="color: #c084fc; text-decoration: underline;">JustWatch India</a></p>
+      </div>
+    `;
+    return;
+  }
+
+  let html = '';
+
+  const getProviderClass = (name) => {
+    const clean = name.toLowerCase();
+    if (clean.includes('netflix')) return 'netflix';
+    if (clean.includes('prime')) return 'amazon-prime-video';
+    if (clean.includes('hotstar')) return 'disney-hotstar';
+    if (clean.includes('jiostar')) return 'jiostar';
+    if (clean.includes('jiocinema')) return 'jiocinema';
+    return '';
+  };
+
+  const getProviderIcon = (name) => {
+    const clean = name.toLowerCase();
+    if (clean.includes('netflix')) return '🔴';
+    if (clean.includes('prime')) return '🔷';
+    if (clean.includes('hotstar')) return '🌟';
+    if (clean.includes('jiostar')) return '✨';
+    if (clean.includes('jiocinema')) return '🍿';
+    if (clean.includes('apple')) return '🍎';
+    if (clean.includes('google')) return '🤖';
+    if (clean.includes('youtube')) return '📺';
+    return '🎬';
+  };
+
+  // 1. Subscription Streaming (Flatrate)
+  if (data.streaming && data.streaming.length > 0) {
+    html += `
+      <div class="provider-group">
+        <h4>Stream (Subscription)</h4>
+        <div class="provider-list">
+          ${data.streaming.map(p => `
+            <div class="provider-badge ${getProviderClass(p)}">
+              <span class="provider-icon">${getProviderIcon(p)}</span>
+              <span>${p}</span>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  }
+
+  // 2. Buy/Rent Platforms
+  if (data.rent_buy && data.rent_buy.length > 0) {
+    html += `
+      <div class="provider-group">
+        <h4>Rent or Buy</h4>
+        <div class="provider-list">
+          ${data.rent_buy.map(p => `
+            <div class="provider-badge ${getProviderClass(p)}">
+              <span class="provider-icon">${getProviderIcon(p)}</span>
+              <span>${p}</span>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  }
+
+  container.innerHTML = html;
 }
 
 async function setupRatingSystem() {
@@ -712,7 +903,12 @@ async function loadRecentlyViewed() {
     recentlyGrid.appendChild(movieCard);
   });
 
-  document.querySelector('.details-container').after(recentlySection);
+  const trailerSec = document.getElementById('trailer-section');
+  if (trailerSec) {
+    trailerSec.after(recentlySection);
+  } else {
+    document.querySelector('.details-container').after(recentlySection);
+  }
 }
 
 function loadSimilarMovies(mainGenre, excludeId) {

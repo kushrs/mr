@@ -56,33 +56,38 @@ registerForm.addEventListener("submit", async (e) => {
     }
 
     // Ensure user has a profile and local storage updated
-    try {
-      let user = data.user;
+    let user = data.user;
+    
+    // Check if email confirmation is required.
+    // In Supabase, if email confirmation is enabled, signUp returns a user but NO session.
+    const isEmailVerificationRequired = user && !data.session;
 
-      // If signUp doesn't return a user (common when email confirmation is required), fetch it
-      if (!user) {
-        const { data: signInData, error: signInErr } = await supabaseClient.auth.signInWithPassword({
-          email,
-          password
-        });
-        if (!signInErr && signInData && signInData.user) {
-          user = signInData.user;
-        }
-      }
-
-      if (user) {
+    if (user) {
+      try {
         console.log("Register: creating/updating profile for", user.id);
         await ensureProfile(user);
-        await storeLocalUser(user);
-        console.log("Register: profile created and stored locally");
+        console.log("Register: profile created successfully");
+      } catch (profileError) {
+        // If profile creation failed (e.g. because email is unconfirmed, meaning unauthenticated, RLS blocks it),
+        // we log it as a warning. The database trigger (if installed) or subsequent logins will handle creation.
+        console.warn('Could not create profile during registration (likely due to pending email verification or RLS):', profileError);
       }
-    } catch (profileError) {
-      console.error('Could not create profile:', profileError);
-      alert('Registration completed, but profile creation failed. Check console for details.');
+
+      // Always try to store local user data for offline fallback
+      try {
+        await storeLocalUser(user);
+      } catch (localErr) {
+        console.error('Could not store local user:', localErr);
+      }
     }
 
-    window.CinePrime?.showToast("Registration successful! Redirecting...");
-    window.location.href = "profile.html";
+    if (isEmailVerificationRequired) {
+      alert("Registration completed! Please check your inbox and confirm your email address before logging in.");
+      window.location.href = "login.html";
+    } else {
+      window.CinePrime?.showToast("Registration successful! Redirecting...");
+      window.location.href = "profile.html";
+    }
   } catch (err) {
     console.error('Registration error:', err);
     showFormError(registerForm, 'Network error. Please check your connection and try again.');
@@ -261,25 +266,55 @@ async function storeLocalUser(user) {
 async function ensureProfile(user) {
   if (!user) return;
 
-  const username = user.email ? user.email.split('@')[0] : '';
-  const profile = {
-    id: user.id,
-    email: user.email,
-    username,
-    full_name: user.user_metadata?.full_name || username,
-    avatar_url: user.user_metadata?.avatar_url || null
-  };
+  let baseUsername = user.email ? user.email.split('@')[0] : 'user';
+  // Clean username to keep only alphanumeric characters
+  baseUsername = baseUsername.replace(/[^a-zA-Z0-9]/g, '');
+  if (!baseUsername) baseUsername = 'user';
 
-  console.log("Upserting profile:", profile);
-  const { error } = await supabaseClient
-    .from('profiles')
-    .upsert(profile, { onConflict: 'id' });
+  let username = baseUsername;
+  let attempts = 0;
+  let success = false;
+  let lastError = null;
 
-  if (error) {
-    console.warn('Failed to upsert profile:', error);
-    throw error;
+  while (attempts < 5 && !success) {
+    const profile = {
+      id: user.id,
+      email: user.email,
+      username: username,
+      full_name: user.user_metadata?.full_name || user.user_metadata?.name || username,
+      avatar_url: user.user_metadata?.avatar_url || user.user_metadata?.picture || null
+    };
+
+    console.log(`Upserting profile (attempt ${attempts + 1}):`, profile);
+    const { error } = await supabaseClient
+      .from('profiles')
+      .upsert(profile, { onConflict: 'id' });
+
+    if (!error) {
+      success = true;
+      console.log('Profile upsert succeeded');
+    } else {
+      lastError = error;
+      console.warn(`Attempt ${attempts + 1} failed:`, error);
+      
+      // Check if it's a unique constraint error (e.g., username is already taken)
+      const isUniqueViolation = error.code === '23505' || 
+                                error.message?.toLowerCase().includes('unique') || 
+                                error.message?.toLowerCase().includes('duplicate key');
+      
+      if (isUniqueViolation) {
+        username = `${baseUsername}${Math.floor(Math.random() * 9000) + 1000}`;
+        attempts++;
+      } else {
+        // Break early for RLS/permission errors, as retrying won't help
+        break;
+      }
+    }
   }
-  console.log('Profile upsert succeeded');
+
+  if (!success) {
+    throw lastError || new Error('Failed to create profile');
+  }
 }
 
 async function checkUser(){

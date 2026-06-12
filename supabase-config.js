@@ -244,6 +244,50 @@ Example format:
         headers: { 'Content-Type': 'application/json' }
       });
     }
+  } else if (path === '/api/availability') {
+    const title = params.get('title') || '';
+    const year = params.get('year') || '';
+    
+    const getMockProviders = (t, y) => {
+      let hash = 0;
+      for (let i = 0; i < t.length; i++) {
+        hash = t.charCodeAt(i) + ((hash << 5) - hash);
+      }
+      hash = Math.abs(hash);
+
+      const streamingPool = ["Netflix", "Amazon Prime Video", "JioCinema", "Disney+ Hotstar", "Zee5", "SonyLIV"];
+      const buyPool = ["Apple TV", "Google Play Movies", "YouTube Store"];
+
+      const numStreaming = (hash % 3) + 1;
+      const numBuy = (hash % 2) + 1;
+
+      const streaming = [];
+      const rent_buy = [];
+
+      for (let i = 0; i < numStreaming; i++) {
+        const idx = (hash + i) % streamingPool.length;
+        const provider = streamingPool[idx];
+        if (!streaming.includes(provider)) {
+          streaming.push(provider);
+        }
+      }
+
+      for (let i = 0; i < numBuy; i++) {
+        const idx = (hash * (i + 1)) % buyPool.length;
+        const provider = buyPool[idx];
+        if (!rent_buy.includes(provider)) {
+          rent_buy.push(provider);
+        }
+      }
+
+      return { streaming, rent_buy };
+    };
+
+    const mockData = getMockProviders(title, year);
+    return new Response(JSON.stringify(mockData), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' }
+    });
   } else {
     console.warn(`No fallback defined for backend route: ${path}`);
     return originalFetch(apiUrl, init);
