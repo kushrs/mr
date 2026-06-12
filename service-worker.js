@@ -1,4 +1,4 @@
-const CACHE_NAME = 'cineprime-cache-v5';
+const CACHE_NAME = 'cineprime-cache-v6';
 const urlsToCache = [
   '/',
   '/index.html',
@@ -41,6 +41,11 @@ self.addEventListener('fetch', event => {
   }
 
   const requestUrl = new URL(event.request.url);
+  
+  // Bypass API requests completely (don't intercept or cache backend API calls)
+  if (requestUrl.pathname.startsWith('/api/')) {
+    return;
+  }
 
   // Offline fallback for navigation requests
   if (event.request.mode === 'navigate') {
